@@ -7,11 +7,25 @@
   <body>
     <script>
 
+      var currentindex = null;
+
+      var updatetweets = function() {
+        for (var i = currentindex; i < streams.home.length - 1; i++) {
+          var message = streams.home[i].message;
+          $("body").prepend("<div>" + "@" + streams.home[i+1].user + ": " + streams.home[i+1].message + "</div>");
+        }
+        currentindex = streams.home.length - 1;                                                           
+      };
+
+
       $(document).ready(function(){
+
         var $body = $('body');
         $body.html('');
 
         var index = streams.home.length - 1;
+        lastknowntweet = streams.home[streams.home.length-1].message;
+        currentindex = index;
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
@@ -19,9 +33,11 @@
           $tweet.appendTo($body);
           index -= 1;
         }
-
       });
 
     </script>
+
+
+
   </body>
 </html>
