@@ -4,9 +4,10 @@
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
     <script src="bootstrap.js"></script>
-    <link rel="stylesheet" type="text/css" href="bootstrap.css"
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
   </head>
   <body>
+
     <script>
 
       var currentindex = null;
@@ -14,7 +15,7 @@
       var updatetweets = function() {
         for (var i = currentindex; i < streams.home.length - 1; i++) {
           var tweet = streams.home[i+1]
-          $("body").prepend("<div>" + "@" + tweet.user + ": " + tweet.message + "<div class=timestamp>" + tweet.created_at + "</div>" + "</div>");
+          $("#update-tweets").after("<div>" + "@" + tweet.user + ": " + tweet.message + "<div class=timestamp>" + tweet.created_at + "</div>" + "</div>");
         }
         currentindex = streams.home.length - 1;                                                           
       };
@@ -23,7 +24,6 @@
       $(document).ready(function(){
 
         var $body = $('body');
-        $body.html('');
 
         var index = streams.home.length - 1;
         lastknowntweet = streams.home[streams.home.length-1].message;
@@ -35,11 +35,15 @@
           $tweet.appendTo($body);
           index -= 1;
         }
+
+        $('#update-tweets').on('click', function(){updatetweets()});
       });
+
+
 
     </script>
 
-
+    <button type="button" class="btn btn-primary" id="update-tweets">Update Tweets</button>
 
   </body>
 </html>
