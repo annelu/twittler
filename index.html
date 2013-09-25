@@ -5,7 +5,14 @@
     <script src="data_generator.js"></script>
     <link rel="stylesheet" type="text/css" href="bootstrap.css">
     <style>
-      .container {padding: 1em;
+      .container {
+        padding: 1em;
+      }
+      #update-utwittles {
+        display: none;
+      }
+      #back-twittles {
+        display: none;
       }
     </style>
 
@@ -15,34 +22,70 @@
     <script>
 
       var currentindex = 0;
+      var currentuser = null;
 
-      var updatetweets = function() {
-        for (var i = currentindex; i < streams.home.length - 1; i++) {
-          var tweet = streams.home[i+1]
-          var $twittles = $("#twittles");
+      var updatetweets = function(twittles) {
+        for (var i = currentindex; i < twittles.length - 1; i++) {
+          var tweet = twittles[i+1];
           var $tweet = $('<div class=container></div>');
-          $tweet.html("@" + tweet.user + ": " + tweet.message + "<div class=text-muted><small>" + tweet.created_at + "</small></div>" + "</div>")
-          $twittles.prepend($tweet);
+          var user = "<a href=" + tweet.user + " class=user>" + tweet.user + "</a>";
+          $tweet.html("@" + user + ": " + tweet.message + "<div class=text-muted><small>" + tweet.created_at + "</small></div>" + "</div>")
+          $("#twittles").prepend($tweet);
         }
-          currentindex = streams.home.length - 1;                                                           
+          currentindex = twittles.length - 1;                                                           
       };
- 
+
+      var displayuser = function() {
+        currentindex = 0;
+        updatetweets(streams.users[currentuser]);
+      };
+
       $(document).ready(function(){
 
-        updatetweets();
+        updatetweets(streams.home);
 
-        $('#update-twittles').on('click', function(){updatetweets()});
+        $('#update-twittles').on('click', function(){
+          updatetweets(streams.home);
+        });
+        $("body").on("click", "a.user", function(e){
+          e.preventDefault();
+          $("#twittles").html('');
+          var user = $(this).attr('href');
+          currentuser = user;
+          displayuser();
+          $("#update-utwittles").show();
+          $("#update-twittles").hide();
+          $("#back-twittles").show();
+        });
+        
+        $("#update-utwittles").on("click", function(){
+          updatetweets(streams.users[currentuser]);
+        });
+        
+        $("#back-twittles").on("click", function(){
+          $("#twittles").html('');
+          currentindex = 0;
+          updatetweets(streams.home);
+          $("#update-utwittles").hide();
+          $("#update-twittles").show();
+          $("#back-twittles").hide();
+        });
+
       });
+
 
 
 
     </script>
 
-    <div class="container"><button type="button" class="btn btn-primary" id="update-twittles">Show New Twittles</button></div>
+    <div class="container" id="buttons">
+      <button type="button" class="btn btn-primary" id="update-twittles">Show New Twittles</button>
+      <button type="button" class="btn btn-primary" id="update-utwittles">Show New User Twittles</button>
+      <button type="button" class="btn btn-primary" id="back-twittles">Back to All Twittles</button>
+    </div>
 
 
-<div class="container" id="twittles">
-  
-</div>
+    <div class="container" id="twittles"></div>
+
   </body>
 </html>
